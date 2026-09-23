@@ -19,46 +19,53 @@
     
         <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
         <style>
-            body, .bg-transparent, .bg-transparent {
+            body {
                 background: linear-gradient(135deg, #2a0812 0%, #4e1121 100%) !important;
                 background-attachment: fixed !important;
                 color: #fff !important;
+                position: relative;
             }
-            .text-light, .text-light, .text-secondary { color: #ddd !important; }
+            .text-muted, .text-dark, .text-secondary { color: #ddd !important; }
             .text-primary { color: #ff9d9d !important; }
-            .card, .bg-transparent { background: rgba(255,255,255,0.05) !important; color: #fff !important; border: 1px solid rgba(255,255,255,0.1) !important; box-shadow: none !important; }
+            .card { background: rgba(255,255,255,0.05) !important; color: #fff !important; border: 1px solid rgba(255,255,255,0.1) !important; box-shadow: none !important; }
             .navbar { background: transparent !important; position: absolute; width: 100%; z-index: 10; top: 0; }
             .navbar-brand span { color: #fff !important; }
             .navbar-light .navbar-nav .nav-link { color: rgba(255,255,255,0.8); }
             .navbar-light .navbar-nav .nav-link:hover { color: #fff; }
-            .hero-image-container {
-                width: 350px;
-                height: 350px;
-                transform-style: preserve-3d;
-                transition: transform 0.1s ease-out;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                margin: 0 auto;
-                position: relative;
-            }
-            .hero-image-container img {
-                width: 100%;
-                height: 100%;
-                object-fit: contain;
-                transform: scale(1.1);
-                filter: drop-shadow(0 20px 40px rgba(0,0,0,0.6));
-            }
+            
             .form-control { background: rgba(255,255,255,0.1); color: #fff; border-color: rgba(255,255,255,0.2); }
             .form-control:focus { background: rgba(255,255,255,0.2); color: #fff; }
-            main { padding-top: 100px; } /* clear absolute navbar */
-            footer { border-top: 1px solid rgba(255,255,255,0.1); background: transparent !important; }
+            main { padding-top: 100px; position: relative; z-index: 1; } 
+            footer { border-top: 1px solid rgba(255,255,255,0.1); background: transparent !important; position: relative; z-index: 1; }
             h1, h2, h3, h4, h5 { color: #fff !important; }
-            p { color: #eee !important; }
+            p, div { color: #eee !important; }
             .text-gradient {
                 background: -webkit-linear-gradient(#fff, #eee);
                 -webkit-background-clip: text;
                 -webkit-text-fill-color: transparent;
+            }
+
+            /* Doodle Background Styles */
+            .doodle-bg-container {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                z-index: 0; /* Behind text content */
+                pointer-events: none; /* Allows clicking on links above it */
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                opacity: 0.15; /* Translucent */
+                perspective: 1200px;
+                overflow: hidden;
+            }
+            .doodle-bg-container img {
+                width: 110vmin; /* Enlarge the doodle */
+                height: 110vmin;
+                object-fit: contain;
+                transition: transform 0.1s ease-out;
             }
         </style>
 
@@ -87,14 +94,7 @@
                         <h1 class="display-5 fw-bolder mb-0"><span class="text-gradient d-inline">Projects</span></h1>
                     </div>
                     <div class="row gx-5 justify-content-center">
-                        
-        <div class="col-lg-5 d-flex justify-content-center align-items-center mb-5 mb-lg-0 sticky-top" style="top: 150px;">
-            <div class="hero-image-container" id="image-container">
-                <img id="track-image" src="assets/doodle.png" alt="Profile" />
-            </div>
-        </div>
-    
-<div class="col-lg-7">
+                        <div class="col-lg-11 col-xl-9 col-xxl-8">
                             <!-- Project Card 1-->
                             <div class="card overflow-hidden shadow rounded-4 border-0 mb-5">
                                 <div class="card-body p-0">
@@ -165,23 +165,29 @@
         <!-- Core theme JS-->
         <script src="js/scripts.js"></script>
     
+        <div class="doodle-bg-container" id="image-container">
+            <img id="track-image" src="assets/doodle.png" alt="" />
+        </div>
         <script>
             document.addEventListener("mousemove", (e) => {
-                const container = document.getElementById("image-container");
-                if (!container) return;
-                const rect = container.getBoundingClientRect();
-                const x = e.clientX - rect.left - rect.width / 2;
-                const y = e.clientY - rect.top - rect.height / 2;
+                const img = document.getElementById("track-image");
+                if (!img) return;
+                
+                // Calculate mouse position relative to center of screen
+                const x = e.clientX - window.innerWidth / 2;
+                const y = e.clientY - window.innerHeight / 2;
+                
                 const xNorm = x / (window.innerWidth / 2);
                 const yNorm = y / (window.innerHeight / 2);
-                container.style.transform = `rotateX(${-yNorm * 25}deg) rotateY(${xNorm * 25}deg)`;
+                
+                img.style.transform = `rotateX(${-yNorm * 25}deg) rotateY(${xNorm * 25}deg) scale(1.05)`;
             });
             document.addEventListener("mouseleave", () => {
-                const container = document.getElementById("image-container");
-                if(container) {
-                    container.style.transition = 'transform 0.5s ease-out';
-                    container.style.transform = `rotateX(0deg) rotateY(0deg)`;
-                    setTimeout(() => { container.style.transition = 'transform 0.1s ease-out'; }, 500);
+                const img = document.getElementById("track-image");
+                if(img) {
+                    img.style.transition = 'transform 0.5s ease-out';
+                    img.style.transform = `rotateX(0deg) rotateY(0deg) scale(1)`;
+                    setTimeout(() => { img.style.transition = 'transform 0.1s ease-out'; }, 500);
                 }
             });
         </script>
