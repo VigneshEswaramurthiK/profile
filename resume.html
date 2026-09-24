@@ -67,7 +67,17 @@
                 object-fit: contain;
                 transition: transform 0.1s ease-out;
             }
-        </style>
+        
+            @keyframes float {
+                0% { transform: translateY(0px) scale(1); }
+                50% { transform: translateY(-20px) scale(1.02); }
+                100% { transform: translateY(0px) scale(1); }
+            }
+            .animated-doodle {
+                animation: float 4s ease-in-out infinite;
+            }
+    
+</style>
 
 </head>
     <body class="d-flex flex-column h-100">
@@ -267,7 +277,7 @@
         <script src="js/scripts.js"></script>
     
         <div class="doodle-bg-container" id="image-container">
-            <img id="track-image" src="assets/doodle.png" alt="" />
+            <img id="track-image" class="animated-doodle" src="assets/doodle_resume.png" alt="" />
         </div>
         <script>
             document.addEventListener("mousemove", (e) => {
