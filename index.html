@@ -184,6 +184,29 @@
                 opacity: 1 !important;
             }
 
+
+            @media (max-width: 991px) {
+                .hero-container {
+                    flex-direction: column-reverse;
+                    text-align: center;
+                    gap: 2rem;
+                    padding-top: 2rem;
+                }
+                .hero-content {
+                    max-width: 100%;
+                }
+                .hero-image-container {
+                    width: 300px !important;
+                    height: 300px !important;
+                }
+                .hero-title {
+                    font-size: 3.5rem !important;
+                }
+                .hero-buttons {
+                    justify-content: center;
+                }
+            }
+
 </style>
 
 
@@ -221,7 +244,7 @@
                         </div>
                     </div>
                     <div class="hero-image-wrapper">
-                        <div class="hero-image-container" id="image-container" style="perspective: 1000px; width: 450px; height: 450px;">
+                        <div class="hero-image-container" id="image-container" style="perspective: 1000px;">
                             <img class="doodle-default animated-doodle" src="assets/doodle_home.png" alt="Working" style="position: absolute; top: 0; left: 0; transition: opacity 0.3s ease-out, transform 0.1s ease-out; width: 130%; height: 130%; object-fit: contain; filter: drop-shadow(0 20px 40px rgba(0,0,0,0.4));" />
                             <img class="doodle-hover animated-doodle" src="assets/doodle_home_waving.png" alt="Waving" style="position: absolute; top: 0; left: 0; opacity: 0; transition: opacity 0.3s ease-out, transform 0.1s ease-out; width: 130%; height: 130%; object-fit: contain; filter: drop-shadow(0 20px 40px rgba(0,0,0,0.4));" />
                         </div>
