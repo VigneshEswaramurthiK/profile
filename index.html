@@ -175,6 +175,14 @@
                 animation: float 4s ease-in-out infinite;
             }
     
+
+            .hero-image-container:hover .doodle-default {
+                display: none !important;
+            }
+            .hero-image-container:hover .doodle-hover {
+                display: block !important;
+            }
+
 </style>
 
 
@@ -212,8 +220,9 @@
                         </div>
                     </div>
                     <div class="hero-image-wrapper">
-                        <div class="hero-image-container" id="image-container">
-                            <img id="track-image" src="assets/portrait.png" alt="Vignesh 3D Portrait" />
+                        <div class="hero-image-container" id="image-container" style="perspective: 1000px; width: 450px; height: 450px;">
+                            <img class="doodle-default animated-doodle" src="assets/doodle_home.png" alt="Working" style="transition: transform 0.1s ease-out; width: 130%; height: 130%; object-fit: contain; filter: drop-shadow(0 20px 40px rgba(0,0,0,0.4));" />
+                            <img class="doodle-hover animated-doodle" src="assets/doodle_wave.png" alt="Waving" style="display: none; transition: transform 0.1s ease-out; width: 130%; height: 130%; object-fit: contain; filter: drop-shadow(0 20px 40px rgba(0,0,0,0.4));" />
                         </div>
                     </div>
                 </div>
