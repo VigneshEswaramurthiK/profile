@@ -125,6 +125,15 @@
                 justify-content: center;
                 align-items: center;
             }
+            
+            .hero-image-container canvas {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+                transform: scale(1.1); 
+                filter: drop-shadow(0 20px 40px rgba(0,0,0,0.6));
+            }
+
             .hero-image-container img {
                 width: 100%;
                 height: 100%;
@@ -164,6 +173,7 @@
             footer .small { color: #aaa !important; }
         </style>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/7.3.2/pixi.min.js"></script>
 </head>
     <body class="d-flex flex-column h-100">
         <main class="flex-shrink-0">
@@ -246,39 +256,76 @@
         <script src="js/scripts.js"></script>
     
         <script>
-            document.addEventListener("mousemove", (e) => {
+            document.addEventListener("DOMContentLoaded", () => {
                 const container = document.getElementById("image-container");
                 if (!container) return;
                 
-                const rect = container.getBoundingClientRect();
+                // Clear existing img
+                container.innerHTML = "";
                 
-                // Calculate mouse position relative to the center of the image container
-                const x = e.clientX - rect.left - rect.width / 2;
-                const y = e.clientY - rect.top - rect.height / 2;
+                // Setup Pixi App
+                const app = new PIXI.Application({
+                    width: 600,
+                    height: 600,
+                    backgroundAlpha: 0,
+                    resolution: window.devicePixelRatio || 1,
+                });
+                container.appendChild(app.view);
                 
-                // Normalize values between -1 and 1 based on screen size
-                const xNorm = x / (window.innerWidth / 2);
-                const yNorm = y / (window.innerHeight / 2);
+                const imgUrl = "assets/portrait.png";
+                const depthUrl = "assets/portrait-depth.png";
                 
-                // Maximum rotation angles (in degrees)
-                const maxRotateX = 25;
-                const maxRotateY = 25;
-                
-                // Calculate rotations
-                const rotateX = -yNorm * maxRotateX;
-                const rotateY = xNorm * maxRotateY;
-                
-                container.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-            });
-            
-            // Reset on mouse leave
-            document.addEventListener("mouseleave", () => {
-                const container = document.getElementById("image-container");
-                if(container) {
-                    container.style.transition = 'transform 0.5s ease-out';
-                    container.style.transform = `rotateX(0deg) rotateY(0deg)`;
-                    setTimeout(() => { container.style.transition = 'transform 0.1s ease-out'; }, 500);
-                }
+                PIXI.Assets.load([imgUrl, depthUrl]).then(() => {
+                    const sprite = PIXI.Sprite.from(imgUrl);
+                    const depthMap = PIXI.Sprite.from(depthUrl);
+                    
+                    // Scale and position
+                    sprite.width = 600;
+                    sprite.height = 600;
+                    sprite.anchor.set(0.5);
+                    sprite.x = 300;
+                    sprite.y = 300;
+                    
+                    depthMap.width = 600;
+                    depthMap.height = 600;
+                    depthMap.anchor.set(0.5);
+                    depthMap.x = 300;
+                    depthMap.y = 300;
+                    
+                    app.stage.addChild(sprite);
+                    app.stage.addChild(depthMap);
+                    
+                    const filter = new PIXI.DisplacementFilter(depthMap);
+                    filter.scale.x = 0;
+                    filter.scale.y = 0;
+                    sprite.filters = [filter];
+                    
+                    let targetX = 0;
+                    let targetY = 0;
+                    
+                    document.addEventListener('mousemove', (e) => {
+                        const rect = app.view.getBoundingClientRect();
+                        const mouseX = e.clientX - (rect.left + rect.width / 2);
+                        const mouseY = e.clientY - (rect.top + rect.height / 2);
+                        
+                        const xNorm = mouseX / (window.innerWidth / 2);
+                        const yNorm = mouseY / (window.innerHeight / 2);
+                        
+                        targetX = xNorm * 45; // Max displacement horizontally
+                        targetY = yNorm * 45; // Max displacement vertically
+                    });
+                    
+                    document.addEventListener('mouseleave', () => {
+                        targetX = 0;
+                        targetY = 0;
+                    });
+                    
+                    // Smooth animation loop
+                    app.ticker.add(() => {
+                        filter.scale.x += (targetX - filter.scale.x) * 0.1;
+                        filter.scale.y += (targetY - filter.scale.y) * 0.1;
+                    });
+                });
             });
         </script>
 
